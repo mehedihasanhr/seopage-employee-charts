@@ -25,7 +25,7 @@ function App() {
     (async () => {
       const response = await fetch('https://seopage1erp.website/api/projecttimelogs');
       const { data } = await response.json();
-      setData(data);
+      setData([...data]);
       setLoading(false);
     })();
   }, []);
