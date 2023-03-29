@@ -18,7 +18,9 @@ function App() {
 
   React.useEffect(() => {
     (async () => {
-      const response = await fetch('https://seopage1erp.website/api/projecttimelogs');
+      const response = await fetch(
+        'https://seopage1erp.website/api/projecttimelogs',
+      );
       const { data } = await response.json();
       setData([...data]);
       setLoading(false);
@@ -29,19 +31,23 @@ function App() {
     if (!data.length) return;
     const filteredData = FilterByDate(data, date);
     console.log({ filteredData });
-    const PrevFilteredData = FilterByDate(data, new Date(date).setDate(new Date(date).getDate() - 1));
+    const PrevFilteredData = FilterByDate(
+      data,
+      new Date(date).setDate(new Date(date).getDate() - 1),
+    );
     console.log({ PrevFilteredData });
     createLabels(hours.start, hours.end);
 
-    const filterHours = FilterByHourRange(filteredData, hours.start, hours.end);
-    console.log({ filterHours });
-    const prevFilterHours = FilterByHourRange(PrevFilteredData, hours.start, hours.end);
-    console.log({ prevFilterHours });
-
     // * filter by minutes
-    const todayActiveEmployee = countActiveEmployee(filterHours, labels);
+    const todayActiveEmployee = countActiveEmployee(
+      FilterByHourRange(filteredData, hours.start, hours.end),
+      labels,
+    );
     console.log({ todayActiveEmployee });
-    const yesterdayActiveEmployee = countActiveEmployee(prevFilterHours, labels);
+    const yesterdayActiveEmployee = countActiveEmployee(
+      FilterByHourRange(PrevFilteredData, hours.start, hours.end),
+      labels,
+    );
     console.log({ yesterdayActiveEmployee });
 
     console.log({
