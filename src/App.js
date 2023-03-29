@@ -28,20 +28,28 @@ function App() {
   React.useEffect(() => {
     if (!data.length) return;
     const filteredData = FilterByDate(data, date);
+    console.log({ filteredData });
     const PrevFilteredData = FilterByDate(data, new Date(date).setDate(new Date(date).getDate() - 1));
+    console.log({ PrevFilteredData });
     createLabels(hours.start, hours.end);
 
     const filterHours = FilterByHourRange(filteredData, hours.start, hours.end);
+    console.log({ filterHours });
     const prevFilterHours = FilterByHourRange(PrevFilteredData, hours.start, hours.end);
+    console.log({ prevFilterHours });
 
     // * filter by minutes
     const todayActiveEmployee = countActiveEmployee(filterHours, labels);
+    console.log({ todayActiveEmployee });
     const yesterdayActiveEmployee = countActiveEmployee(prevFilterHours, labels);
+    console.log({ yesterdayActiveEmployee });
 
     console.log({
       todayActiveEmployee,
       yesterdayActiveEmployee,
     });
+
+    console.log({ data });
     if (todayActiveEmployee.length && yesterdayActiveEmployee.length) {
       setGraphData({
         labels,
