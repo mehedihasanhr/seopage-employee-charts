@@ -10,7 +10,7 @@ function App() {
   const [loading, setLoading] = React.useState(true);
   const [graphData, setGraphData] = React.useState(null);
   const [labels, setLabels] = React.useState([]);
-  const [date, setDate] = React.useState();
+  const [date, setDate] = React.useState('');
   const [hours, setHours] = React.useState({
     start: 8,
     end: 17,
