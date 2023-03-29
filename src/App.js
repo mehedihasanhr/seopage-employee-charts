@@ -18,6 +18,7 @@ function App() {
 
   React.useEffect(() => {
     setDate(new Date().toISOString().slice(0, 10));
+    console.log(data);
   }, [data]);
 
   React.useEffect(() => {
@@ -42,6 +43,10 @@ function App() {
     const todayActiveEmployee = countActiveEmployee(filterHours, labels);
     const yesterdayActiveEmployee = countActiveEmployee(prevFilterHours, labels);
 
+    console.log({
+      todayActiveEmployee,
+      yesterdayActiveEmployee,
+    });
     if (todayActiveEmployee.length && yesterdayActiveEmployee.length) {
       setGraphData({
         labels,
