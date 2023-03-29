@@ -10,16 +10,11 @@ function App() {
   const [loading, setLoading] = React.useState(true);
   const [graphData, setGraphData] = React.useState(null);
   const [labels, setLabels] = React.useState([]);
-  const [date, setDate] = React.useState('');
+  const [date, setDate] = React.useState(new Date().toISOString().slice(0, 10));
   const [hours, setHours] = React.useState({
     start: 8,
     end: 17,
   });
-
-  React.useEffect(() => {
-    setDate(new Date().toISOString().slice(0, 10));
-    console.log(data);
-  }, [data]);
 
   React.useEffect(() => {
     (async () => {
