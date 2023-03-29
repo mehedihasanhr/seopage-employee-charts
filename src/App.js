@@ -18,7 +18,7 @@ function App() {
 
   React.useEffect(() => {
     setDate(new Date().toISOString().slice(0, 10));
-  }, []);
+  }, [data]);
 
   React.useEffect(() => {
     (async () => {
