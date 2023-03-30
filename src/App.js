@@ -51,6 +51,11 @@ function App() {
       labels,
     );
 
+    console.log({
+      todayActiveEmployee,
+      yesterdayActiveEmployee,
+    });
+
     if (todayActiveEmployee.length && yesterdayActiveEmployee.length) {
       setActiveData({
         today: todayActiveEmployee,
