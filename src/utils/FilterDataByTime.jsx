@@ -131,9 +131,7 @@ const graphPrevData = (data, labels) => {
       } else if (new Date(f.end_time).getTime() >= new Date(l).getTime()) {
         console.log('true asd');
         return true;
-      }
-
-      return false;
+      } else return false;
     });
 
     return newData.push(filtered.length);
@@ -194,7 +192,7 @@ const getCurrentData = (data, time, labels) => {
     return false;
   });
 
-  // return graphCurrentData(fd, labels);
+  return graphCurrentData(fd, labels);
 };
 
 export function FilterDataByTimeRange(data, time) {
@@ -208,10 +206,14 @@ export function FilterDataByTimeRange(data, time) {
   let curr = getCurrentData(data, time, labels);
 
   console.log({ prev, curr });
+  let l = labels.map((m) => ({
+    hm: `${new Date(m).getHours()}:${new Date(m).getMinutes()}`,
+    full: m,
+  }));
 
   return {
-    current: null,
-    labels: null,
-    yesterday: null,
+    current: curr,
+    labels: l,
+    yesterday: prev,
   };
 }
