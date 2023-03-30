@@ -11,7 +11,7 @@ function App() {
   const [loading, setLoading] = React.useState(true);
   const [graphData, setGraphData] = React.useState(null);
   const [labels, setLabels] = React.useState([]);
-  const [date, setDate] = React.useState(new Date().toISOString().slice(0, 10));
+  const [date, setDate] = React.useState('');
   const [hours, setHours] = React.useState({ start: 8, end: 17 });
   const [activeData, setActiveData] = React.useState({
     today: null,
@@ -29,7 +29,8 @@ function App() {
     })();
   }, []);
 
-  React.useEffect(() => {
+  // filter all data
+  const FilterAllData = () => {
     if (!data.length) return;
     const filteredData = FilterByDate(data, date);
     const PrevFilteredData = FilterByDate(
@@ -62,7 +63,17 @@ function App() {
         yesterday: yesterdayActiveEmployee,
       });
     }
+  };
 
+  // set time when data change
+  React.useEffect(() => {
+    setDate(new Date().toISOString().slice(0, 10));
+  }, [data]);
+
+  React.useEffect(() => {
+    console.log(data);
+    FilterAllData();
+    console.log(data);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, date, hours]);
 
