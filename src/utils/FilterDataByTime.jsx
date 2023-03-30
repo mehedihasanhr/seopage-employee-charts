@@ -132,7 +132,6 @@ const graphPrevData = (data, labels) => {
         new Date(f.end_time).getTime() >=
         new Date(l).setDate(new Date(l).getDate() - 1)
       ) {
-        console.log('true asd');
         return true;
       } else return false;
     });
@@ -169,8 +168,6 @@ const previousData = (data, time, labels) => {
   let ps = new Date(s).setDate(new Date(s).getDate() - 1);
   let pe = new Date(e).setDate(new Date(e).getDate() - 1);
 
-  console.log({ ps });
-
   let fd = data.filter((d) => {
     if (d.end_time === null) return true;
     if (new Date(d.end_time).getTime() >= ps) {
@@ -180,7 +177,6 @@ const previousData = (data, time, labels) => {
     return false;
   });
 
-  console.log({ fd });
   return graphPrevData(fd, labels);
 };
 
@@ -204,13 +200,12 @@ export function FilterDataByTimeRange(data, time) {
   const s = new Date(time[0]);
   const e = new Date(time[1]);
   const isSameDate = s.getDate() === e.getDate();
-  console.log(isSameDate);
+
   const labels = createLabels(isSameDate, time);
 
   let prev = previousData(data, time, labels);
   let curr = getCurrentData(data, time, labels);
 
-  console.log({ prev, curr });
   let l = labels.map((m) => ({
     hm: `${new Date(m).getHours()}:${new Date(m).getMinutes()}`,
     full: m,
