@@ -128,7 +128,10 @@ const graphPrevData = (data, labels) => {
     let filtered = data.filter((f) => {
       if (f.end_time === null) {
         return true;
-      } else if (new Date(f.end_time).getTime() >= new Date(l).getTime()) {
+      } else if (
+        new Date(f.end_time).getTime() >=
+        new Date(l).setDate(new Date(l).getDate() - 1)
+      ) {
         console.log('true asd');
         return true;
       } else return false;
@@ -165,6 +168,8 @@ const previousData = (data, time, labels) => {
   const e = new Date(time[1]);
   let ps = new Date(s).setDate(new Date(s).getDate() - 1);
   let pe = new Date(e).setDate(new Date(e).getDate() - 1);
+
+  console.log({ ps });
 
   let fd = data.filter((d) => {
     if (d.end_time === null) return true;
