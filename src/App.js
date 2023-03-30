@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { Charts } from './components/Charts';
 import { countActiveEmployee } from './utils/CountActiveEmployee';
+import { createLabels } from './utils/CreateGraphLabels';
 import { FilterByDate } from './utils/FilterByDate';
 import { FilterByHourRange } from './utils/FilterByHourRange';
 
@@ -11,9 +12,10 @@ function App() {
   const [graphData, setGraphData] = React.useState(null);
   const [labels, setLabels] = React.useState([]);
   const [date, setDate] = React.useState(new Date().toISOString().slice(0, 10));
-  const [hours, setHours] = React.useState({
-    start: 8,
-    end: 17,
+  const [hours, setHours] = React.useState({ start: 8, end: 17 });
+  const [activeData, setActiveData] = React.useState({
+    today: null,
+    yesterday: null,
   });
 
   React.useEffect(() => {
@@ -30,92 +32,94 @@ function App() {
   React.useEffect(() => {
     if (!data.length) return;
     const filteredData = FilterByDate(data, date);
-    console.log({ filteredData });
     const PrevFilteredData = FilterByDate(
       data,
       new Date(date).setDate(new Date(date).getDate() - 1),
     );
-    console.log({ PrevFilteredData });
-    createLabels(hours.start, hours.end);
+
+    let l = createLabels(hours.start, hours.end);
+    setLabels(l);
 
     // * filter by minutes
     const todayActiveEmployee = countActiveEmployee(
       FilterByHourRange(filteredData, hours.start, hours.end),
       labels,
     );
-    console.log({ todayActiveEmployee });
+
     const yesterdayActiveEmployee = countActiveEmployee(
       FilterByHourRange(PrevFilteredData, hours.start, hours.end),
       labels,
     );
-    console.log({ yesterdayActiveEmployee });
 
-    console.log({
-      todayActiveEmployee,
-      yesterdayActiveEmployee,
-    });
-
-    console.log({ data });
     if (todayActiveEmployee.length && yesterdayActiveEmployee.length) {
-      setGraphData({
-        labels,
-        datasets: [
-          {
-            label: 'Today',
-            fill: 'start',
-            data: todayActiveEmployee,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-          },
-          {
-            label: 'Yesterday',
-            fill: 'start',
-            data: yesterdayActiveEmployee,
-            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1,
-          },
-        ],
+      setActiveData({
+        today: todayActiveEmployee,
+        yesterday: yesterdayActiveEmployee,
       });
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, date, hours]);
 
-  // create labels for x axis
-  const createLabels = (start, end) => {
-    const labels = [];
+  useEffect(() => {
+    if (!activeData.today && !activeData.yesterday) return;
 
-    /*
-     ** if start is 0 and end is 1 then create labels for each 3 minute
-     ** else create labels for 20 minutes
-     */
+    setGraphData({
+      labels,
+      datasets: [
+        {
+          label: 'Today',
+          fill: 'start',
+          data: activeData.today,
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1,
+        },
+        {
+          label: 'Yesterday',
+          fill: 'start',
+          data: activeData.yesterday,
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1,
+        },
+      ],
+    });
+  }, [activeData, labels]);
 
-    if (end - start === 1) {
-      for (let i = 0; i <= 20; i++) {
-        if (i * 3 === 60) {
-          labels.push(new Date().getHours() + ':00');
-        } else {
-          labels.push(start + ':' + i * 3);
-        }
-      }
-    } else {
-      // convert end - start hours to minutes
-      const minutes = (end - start) * 60;
+  // // create labels for x axis
+  // const createLabels = (start, end) => {
+  //   const labels = [];
 
-      // create labels for each 20 minutes
-      for (let i = 0; i <= minutes / 20; i++) {
-        if (start === new Date().getHours()) break;
-        if (i * 20 === 60) {
-          start++;
-          i = 0;
-        }
-        labels.push(start + ':' + i * 20);
-      }
-    }
-    setLabels(labels);
-  };
+  //   /*
+  //    ** if start is 0 and end is 1 then create labels for each 3 minute
+  //    ** else create labels for 20 minutes
+  //    */
+
+  //   if (end - start === 1) {
+  //     for (let i = 0; i <= 20; i++) {
+  //       if (i * 3 === 60) {
+  //         labels.push(new Date().getHours() + ':00');
+  //       } else {
+  //         labels.push(start + ':' + i * 3);
+  //       }
+  //     }
+  //   } else {
+  //     // convert end - start hours to minutes
+  //     const minutes = (end - start) * 60;
+
+  //     // create labels for each 20 minutes
+  //     for (let i = 0; i <= minutes / 20; i++) {
+  //       if (start === new Date().getHours()) break;
+  //       if (i * 20 === 60) {
+  //         start++;
+  //         i = 0;
+  //       }
+  //       labels.push(start + ':' + i * 20);
+  //     }
+  //   }
+  //   setLabels(labels);
+  // };
 
   // handle select change
   const handleSelectChange = (e) => {
@@ -125,7 +129,8 @@ function App() {
     let start = d - hour;
     let end = d;
     setHours({ start, end });
-    createLabels(start, end);
+    const l = createLabels(start, end);
+    setLabels(l);
   };
 
   /**
@@ -135,12 +140,13 @@ function App() {
 
   const handleDateChange = (e) => {
     setDate(e.target.value);
+    const l = createLabels(8, 17);
     setHours({
       start: 8,
       end: 17,
     });
 
-    createLabels(8, 17);
+    setLabels(l);
   };
 
   if (loading) return <h1>Loading...</h1>;
