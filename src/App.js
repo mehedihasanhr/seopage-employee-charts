@@ -7,7 +7,7 @@ import { FilterByDate } from './utils/FilterByDate';
 import { FilterByHourRange } from './utils/FilterByHourRange';
 
 function App() {
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
   const [graphData, setGraphData] = React.useState(null);
   const [labels, setLabels] = React.useState([]);
@@ -31,7 +31,7 @@ function App() {
 
   // filter all data
   const FilterAllData = () => {
-    if (!data.length) return;
+    if (!data || !data.length) return;
     const filteredData = FilterByDate(data, date);
     const PrevFilteredData = FilterByDate(
       data,
